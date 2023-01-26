@@ -25,7 +25,6 @@ function Main({onEditProfile, onAddPlace, onEditAvatar, onOpenCard}) {
           })
     },[])
 
-
     return (
         <main className="content">
             <section className="profile">
