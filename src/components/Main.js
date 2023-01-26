@@ -1,15 +1,28 @@
-import React from "react";
+import {useEffect, useState} from "react";
+import Card from "./Card";
 import { api } from "../utils/API";
 
-function Main(props) {
-    const [userInfo, setUserInfo] = React.useState({userName: '', userDescription: '', userAvatar: ''})
+function Main({onEditProfile, onAddPlace, onEditAvatar, onOpenCard}) {
+    const [userInfo, setUserInfo] = useState({userName: '', userDescription: '', userAvatar: ''})
+    const [cards, setCards] = useState([])
 
-    React.useEffect(()=>{
-        api.getUserInfo().then((data) => setUserInfo(
+    useEffect(()=>{
+        api.getCardsList()
+        .then((cards) => setCards(cards))
+        .catch((err) =>{
+          console.log(err);
+        })
+    },[])    
+
+    useEffect(()=>{
+        api.getUserInfo()
+        .then((data) => setUserInfo(
             {userName: data.name,
             userDescription: data.about,
-            userAvatar: data.avatar}
-        ))
+            userAvatar: data.avatar}))
+        .catch((err) =>{
+            console.log(err);
+          })
     },[])
 
 
@@ -18,19 +31,26 @@ function Main(props) {
             <section className="profile">
                 <div className="profile__avatar-container">
                     <img src={userInfo.userAvatar} alt="Автарака пользователя" className="profile__avatar" />
-                    <button area-label='Edit Profile Picture' className="profile__avatar-edit-button" type="button" onClick={props.onEditAvatar}></button>
+                    <button area-label='Edit Profile Picture' className="profile__avatar-edit-button" type="button" onClick={onEditAvatar}></button>
                 </div>
                 <div className="profile__profile-info">
                     <h1 className="profile__name">{userInfo.userName}</h1>
                     <p className="profile__job">{userInfo.userDescription}</p>
-                    <button aria-label='Edit Profile Info' className="profile__edit-button" type="button" onClick={props.onEditProfile}></button>
+                    <button aria-label='Edit Profile Info' className="profile__edit-button" type="button" onClick={onEditProfile}></button>
                 </div>
-                <button aria-label='Add Card' className="profile__add-button" type="button" onClick={props.onAddPlace}></button>
-                </section>
-                <section className="elements">
-                    {props.children}
-                </section>
-            </main>
+                <button aria-label='Add Card' className="profile__add-button" type="button" onClick={onAddPlace}></button>
+            </section>
+            <section className="elements">
+                {
+                    cards.map((card) => {
+                        return (<Card 
+                                    key={card._id} 
+                                    card={card} 
+                                    onCardClick={(card) => onOpenCard(card)}/>)    
+                    })
+                }
+            </section>
+        </main>
     )
 }
 
