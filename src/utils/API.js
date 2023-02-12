@@ -58,15 +58,30 @@ class API {
         .then(res => this._checkResponseStatus(res))
     };
 
-    putLike(id){
-        return fetch(`${this.baseUrl}/cards/${id}/likes`, {
-            method: 'PUT',
-            headers: this.headers
-        })
-        .then(res => this._checkResponseStatus(res))
-    };
+    // putLike(id){
+    //     return fetch(`${this.baseUrl}/cards/${id}/likes`, {
+    //         method: 'PUT',
+    //         headers: this.headers
+    //     })
+    //     .then(res => this._checkResponseStatus(res))
+    // };
     
-    deleteLike(id){
+    // deleteLike(id){
+    //     return fetch(`${this.baseUrl}/cards/${id}/likes`, {
+    //         method: 'DELETE',
+    //         headers: this.headers
+    //     })
+    //     .then(res => this._checkResponseStatus(res))
+    // };
+
+    changeLikeCardStatus(id, isLiked){
+        if (isLiked){
+            return fetch(`${this.baseUrl}/cards/${id}/likes`, {
+                method: 'PUT',
+                headers: this.headers
+            })
+            .then(res => this._checkResponseStatus(res))
+        }  
         return fetch(`${this.baseUrl}/cards/${id}/likes`, {
             method: 'DELETE',
             headers: this.headers
@@ -74,11 +89,13 @@ class API {
         .then(res => this._checkResponseStatus(res))
     };
 
-    updateAvatar(avatar){
+    updateAvatar(data){
         return fetch(`${this.baseUrl}/users/me/avatar`, {
             method: 'PATCH',
             headers: this.headers,
-            body: JSON.stringify(avatar)
+            body: JSON.stringify({
+                avatar: data.avatar
+            })
         })
         .then(res => this._checkResponseStatus(res))
     };
