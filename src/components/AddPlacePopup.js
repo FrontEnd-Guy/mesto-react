@@ -18,7 +18,9 @@ export function AddPlacePopup({isOpen, onClose, onAddPlace}){
         onAddPlace({
             link: link,
             name: name
-        })
+        });
+        setLink('');
+        setName('');
     }
 
     return (

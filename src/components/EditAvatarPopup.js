@@ -9,7 +9,7 @@ export function EditAvatarPopup({isOpen, onClose, onUpdateAvatar}) {
         onUpdateAvatar({
           avatar: inputRef.current.value
         });
-        this.form.reset()
+        inputRef.current.value = '';
       } 
     
     return(
