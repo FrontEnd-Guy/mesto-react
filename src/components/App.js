@@ -18,6 +18,8 @@ function App() {
   const [isEditAvatarPopupOpen, setEditAvatarPopupState] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
   const [cards, setCards] = useState([])
+  const [isLoading, setIsLoading] = useState(false);
+
 
   useEffect(()=>{
     api.getUserInfo()
@@ -71,31 +73,53 @@ function App() {
     setSelectedCard(null)
   }
 
+  const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard
+
+  useEffect(() => {
+    function closeByEscape(evt) {
+      if(evt.key === 'Escape') {
+        closeAllPopups();
+      }
+    }
+    if(isOpen) {
+      document.addEventListener('keydown', closeByEscape);
+      return () => {
+        document.removeEventListener('keydown', closeByEscape);
+      }
+    }
+  }, [isOpen]) 
+
   function handleUpdateUser(data){
+    setIsLoading(true);
     api.editUserInfo(data)
       .then((updatedUserInfo) =>{
-        setCurrentUser(updatedUserInfo)
+        setCurrentUser(updatedUserInfo);
+        closeAllPopups();
       })
       .catch((err) => console.log(err))
-    closeAllPopups();
+      .finally(()=>setIsLoading(false))
   }
 
   function handleUpdateAvatar(data) {
+    setIsLoading(true);
     api.updateAvatar(data)
       .then((updatedAvater) =>{
-        setCurrentUser(updatedAvater)
+        setCurrentUser(updatedAvater);
+        closeAllPopups();
       })
       .catch((err) => console.log(err))
-    closeAllPopups();
+      .finally(()=>setIsLoading(false))
   }
 
   function handleAddPlaceSubmit(data) {
+    setIsLoading(true);
     api.createCard(data)
       .then((newCard) =>{
-        setCards([newCard, ...cards])
+        setCards([newCard, ...cards]);
+        closeAllPopups()
       })
       .catch((err) => console.log(err))
-    closeAllPopups();
+      .finally(()=>setIsLoading(false))
   }
 
   return (
@@ -116,11 +140,13 @@ function App() {
       <EditProfilePopup 
           isOpen={isEditProfilePopupOpen} 
           onClose={closeAllPopups} 
-          onUpdateUser={handleUpdateUser}/> 
+          onUpdateUser={handleUpdateUser}
+          buttonText={isLoading? 'Сохранение...' : 'Сохранить'}/> 
       <AddPlacePopup 
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
-          onAddPlace={handleAddPlaceSubmit}/>
+          onAddPlace={handleAddPlaceSubmit}
+          buttonText={isLoading? 'Сохранение...' : 'Сохранить'}/> 
       <PopupWithForm 
           title = 'Вы уверены?' 
           name = 'delete-card'
@@ -128,7 +154,8 @@ function App() {
       <EditAvatarPopup 
           isOpen={isEditAvatarPopupOpen} 
           onClose={closeAllPopups} 
-          onUpdateAvatar={handleUpdateAvatar}/> 
+          onUpdateAvatar={handleUpdateAvatar}
+          buttonText={isLoading? 'Сохранение...' : 'Сохранить'}/>  
     </CurrentUserContext.Provider>
   );
 }

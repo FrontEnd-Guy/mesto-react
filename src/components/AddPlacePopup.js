@@ -1,27 +1,18 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useForm } from "../hooks/useForm";
 import {PopupWithForm} from "./PopupWithForm";
 
-export function AddPlacePopup({isOpen, onClose, onAddPlace}){
-    const [link, setLink] = useState('');
-    const [name, setName] = useState('');
+export function AddPlacePopup({isOpen, onClose, onAddPlace, buttonText}){
+    const {values, handleChange, setValues} = useForm({});
 
-    function handleLinkChange(e){
-        setLink(e.target.value)
-    }
-
-    function handleNameChange(e){
-        setName(e.target.value)
-    }
+    useEffect(() => {
+        setValues({});
+    }, [isOpen]);
 
     function handleSubmit(e){
         e.preventDefault();
-        onAddPlace({
-            link: link,
-            name: name
-        });
-        setLink('');
-        setName('');
-    }
+        onAddPlace(values);
+    };
 
     return (
         <PopupWithForm 
@@ -30,15 +21,15 @@ export function AddPlacePopup({isOpen, onClose, onAddPlace}){
             isOpen = {isOpen} 
             onClose = {onClose}
             onSubmit = {handleSubmit}
-            buttonText = 'Сохранить'>
+            buttonText = {buttonText}>
                 <label className="popup__field">
-                    <input type="text" value={name} id="place-input" className="popup__input popup__input_field_place-name" 
-                           name="add-place" placeholder="Название" required minLength="2" maxLength="30" onChange={handleNameChange}/>
+                    <input type="text" value={values.name || ''} id="place-input" className="popup__input popup__input_field_place-name" 
+                           name="name" placeholder="Название" required minLength="2" maxLength="30" onChange={handleChange}/>
                     <span className="popup__input-error place-input-error"></span>
                 </label>
                 <label className="popup__field">
-                    <input type="url" value={link} id="link-input" className="popup__input popup__input_field_image-link" 
-                           name="add-link" placeholder="Ссылка на картинку" required onChange={handleLinkChange}/>
+                    <input type="url" value={values.link || ''} id="link-input" className="popup__input popup__input_field_image-link" 
+                           name="link" placeholder="Ссылка на картинку" required onChange={handleChange}/>
                     <span className="popup__input-error link-input-error"></span>
                 </label>
         </PopupWithForm>

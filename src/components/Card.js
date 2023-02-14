@@ -23,17 +23,15 @@ function Card({card, onCardClick, onCardLike, onCardDelete}) {
     }
 
     return(
-        <div className="template-card">
-            <article className="element">
-                <img className="element__image" src={card.link} alt={card.name} onClick={handleClick}/>
-                <h2 className="element__title">{card.name}</h2>
-                <div className="element__like-container">
-                    <button aria-label='Like' className={cardLikeButtonClassName} type="button" onClick={handleLikeClick}></button>
-                    <span className="element__like-counter">{card.likes.length}</span>
-                </div>
-                {isOwn && <button aria-label='Delete' className="element__delete" type="button" onClick={handleDeleteClick} />}
-            </article>
-        </div>
+        <article className="element">
+            <img className="element__image" src={card.link} alt={card.name} onClick={handleClick}/>
+            <h2 className="element__title">{card.name}</h2>
+            <div className="element__like-container">
+                <button aria-label='Like' className={cardLikeButtonClassName} type="button" onClick={handleLikeClick}></button>
+                <span className="element__like-counter">{card.likes.length}</span>
+            </div>
+            {isOwn && <button aria-label='Delete' className="element__delete" type="button" onClick={handleDeleteClick} />}
+        </article>
     )
 }
 
